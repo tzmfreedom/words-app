@@ -1,8 +1,9 @@
 PORT := 8080
+DATABASE_URL := "postgres://postgres:@localhost:5432/myapp?sslmode=disable"
 
 .PHONY: run
 run: format
-	PORT=$(PORT) go run .
+	DATABASE_URL=$(DATABASE_URL) PORT=$(PORT) go run .
 
 .PHONY: format
 format:
@@ -30,3 +31,15 @@ sql-migrate:
 
 .PHONY: install
 install: sql-migrate
+
+.PHONY: prod/db/migrate
+prod/db/migrate:
+	heroku run $(MAKE) db/migrate
+
+.PHONY: up
+up:
+	docker-compose up -d
+
+.PHONY: db/init
+db/init:
+	psql -U postgres -h localhost -p 5432 -c "CREATE DATABASE postgres;"
