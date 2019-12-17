@@ -1,5 +1,5 @@
-PORT := 8080
-DATABASE_URL := "postgres://postgres:@localhost:5432/myapp?sslmode=disable"
+PORT ?= 8080
+DATABASE_URL ?= "postgres://postgres:@localhost:5432/myapp?sslmode=disable"
 
 .PHONY: run
 run: format
