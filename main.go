@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/k0kubun/pp"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ func main() {
 	}
 	defer db.Close()
 	http.HandleFunc("/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
-		http.FileServer(http.Dir("./public")).ServeHTTP(w, r)
+		http.FileServer(http.Dir("./client/dist")).ServeHTTP(w, r)
 	}))
 	idSentenceRegexp := regexp.MustCompile(`^/sentences/(\d+)$`)
 	http.HandleFunc("/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
@@ -129,7 +130,8 @@ func main() {
 			fmt.Fprint(w, string(res))
 		}
 	}))
-	err = http.ListenAndServe(":"+port, nil)
+	handler := cors.Default().Handler(http.DefaultServeMux)
+	err = http.ListenAndServe(":"+port, handler)
 	if err != nil {
 		panic(err)
 	}
