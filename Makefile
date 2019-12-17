@@ -34,7 +34,7 @@ install: sql-migrate
 
 .PHONY: prod/db/migrate
 prod/db/migrate:
-	heroku run $(MAKE) db/migrate
+	heroku run make db/migrate
 
 .PHONY: up
 up:
