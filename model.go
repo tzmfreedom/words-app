@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 )
 
 type Sentence struct {
@@ -20,14 +21,42 @@ func findAllSentence(db *sql.DB) ([]*Sentence, error) {
 	sentences := []*Sentence{}
 	for rows.Next() {
 		var id int
-		var value string
-		rows.Scan(&id, &value)
+		var value, createdAt, updatedAt string
+		err := rows.Scan(&id, &value, &createdAt, &updatedAt)
+		if err != nil {
+			return nil, err
+		}
 		sentences = append(sentences, &Sentence{
-			Id:    id,
-			Value: value,
+			Id:        id,
+			Value:     value,
+			CreatedAt: createdAt,
+			UpdatedAt: updatedAt,
 		})
 	}
 	return sentences, nil
+}
+
+func findSentence(db *sql.DB, id int) (*Sentence, error) {
+	rows, err := db.Query("SELECT id, value, created_at, updated_at FROM sentences WHERE id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	if rows.Next() {
+		var id int
+		var value, createdAt, updatedAt string
+		err := rows.Scan(&id, &value, &createdAt, &updatedAt)
+		if err != nil {
+			return nil, err
+		}
+		return &Sentence{
+			Id:        id,
+			Value:     value,
+			CreatedAt: createdAt,
+			UpdatedAt: updatedAt,
+		}, nil
+	}
+	return nil, errors.New("not found")
 }
 
 func createSentence(db *sql.DB, value string) (int64, error) {

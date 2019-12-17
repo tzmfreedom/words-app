@@ -28,6 +28,28 @@ func main() {
 	idSentenceRegexp := regexp.MustCompile(`^/sentences/(\d+)$`)
 	http.HandleFunc("/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
+		case http.MethodGet:
+			if !idSentenceRegexp.MatchString(r.RequestURI) {
+				log.Fatal(err)
+				return
+			}
+			matches := idSentenceRegexp.FindStringSubmatch(r.RequestURI)
+			id, err := strconv.Atoi(matches[1])
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+			sentence, err := findSentence(db, id)
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+			res, err := json.Marshal(sentence)
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+			fmt.Fprint(w, string(res))
 		case http.MethodPut:
 			if !idSentenceRegexp.MatchString(r.RequestURI) {
 				log.Fatal(err)
@@ -119,6 +141,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func handleErrorResponse() {
+
 }
 
 func WithBasicAuth(f func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
