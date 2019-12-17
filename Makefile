@@ -19,3 +19,14 @@ dep:
 .PHONY: deploy
 deploy:
 	git push heroku master
+
+.PHONY: db/migrate
+db/migrate: sql-migrate
+	sql-migrate up
+
+.PHONY: sql-migrate
+sql-migrate:
+	go get -v github.com/rubenv/sql-migrate/...
+
+.PHONY: install
+install: sql-migrate
