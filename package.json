@@ -1,0 +1,12 @@
+{
+  "name": "words-app",
+  "version": "0.0.1",
+  "engines": {
+    "node": "7.10.0",
+    "npm": "4.2.0",
+    "yarn": "1.x"
+  },
+  "scripts": {
+    "postinstall": "cd ./client && yarn install && yarn build"
+  }
+}
