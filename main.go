@@ -16,8 +16,7 @@ func main() {
 	}
 	defer db.Close()
 	port := os.Getenv("PORT")
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	})
+	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/sentences", func(w http.ResponseWriter, r *http.Request) {
 		rows, err := db.Query("SELECT id, value FROM sentences")
 		if err != nil {
