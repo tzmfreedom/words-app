@@ -22,12 +22,12 @@ deploy:
 	git push heroku master
 
 .PHONY: db/migrate
-db/migrate: sql-migrate
-	sql-migrate up
+db/migrate:
+	migrate -database $(DATABASE_URL) -path db/migrations up
 
-.PHONY: sql-migrate
-sql-migrate:
-	go get -v github.com/rubenv/sql-migrate/...
+.PHONY: migrate
+migrate:
+	go get -u github.com/golang-migrate/migrate
 
 .PHONY: install
 install: sql-migrate
@@ -43,3 +43,7 @@ up:
 .PHONY: db/init
 db/init:
 	psql -U postgres -h localhost -p 5432 -c "CREATE DATABASE postgres;"
+
+.PHONY: db/migrate/new
+db/migrate/new:
+	migrate create -ext sql -dir db/migrations -seq $(NAME)

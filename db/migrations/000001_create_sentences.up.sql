@@ -1,4 +1,3 @@
--- +migrate Up
 CREATE TABLE sentences (
   id integer,
   value varchar(1000),
@@ -7,4 +6,3 @@ CREATE TABLE sentences (
   PRIMARY KEY (id)
 );
 
--- +migrate Down
