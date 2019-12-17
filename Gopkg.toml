@@ -32,4 +32,4 @@
 [metadata.heroku]
   root-package = "github.com/tzmfreedom/words-app"
   go-version = "1.11"
-  install = ["github.com/rubenv/sql-migrate"]
+  additional-tools = ["github.com/rubenv/sql-migrate"]
