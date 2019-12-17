@@ -59,28 +59,24 @@ func findSentence(db *sql.DB, id int) (*Sentence, error) {
 	return nil, errors.New("not found")
 }
 
-func createSentence(db *sql.DB, value string) (int64, error) {
-	_, err := db.Exec("INSERT INTO sentences(value, created_at, updated_at) VALUES ($1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);", value)
+func createSentence(db *sql.DB, value string) (int, error) {
+	row := db.QueryRow("INSERT INTO sentences(value, created_at, updated_at) VALUES ($1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;", value)
+	var id int
+	err := row.Scan(&id)
 	if err != nil {
 		return 0, err
 	}
-	return 0, nil
+	return id, nil
 }
 
-func updateSentence(db *sql.DB, id int64, value string) (int64, error) {
+func updateSentence(db *sql.DB, id int, value string) error {
 	_, err := db.Exec("UPDATE sentences SET value = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2", value, id)
-	if err != nil {
-		return 0, err
-	}
-	return 0, nil
+	return err
 }
 
-func deleteSentence(db *sql.DB, id int64) (int64, error) {
+func deleteSentence(db *sql.DB, id int) error {
 	_, err := db.Exec("DELETE FROM sentences WHERE id = $1", id)
-	if err != nil {
-		return 0, err
-	}
-	return 0, nil
+	return err
 }
 
 type SentencesResponse struct {
@@ -105,4 +101,8 @@ type UpdateSentenceResponse struct {
 
 type DeleteSentenceResponse struct {
 	Id int `json:"id"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
 }

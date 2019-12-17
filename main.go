@@ -30,29 +30,27 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			if !idSentenceRegexp.MatchString(r.RequestURI) {
-				log.Fatal(err)
+				handleNotFound(w)
 				return
 			}
 			matches := idSentenceRegexp.FindStringSubmatch(r.RequestURI)
 			id, err := strconv.Atoi(matches[1])
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
 			sentence, err := findSentence(db, id)
 			if err != nil {
-				log.Fatal(err)
+				handleNotFound(w)
 				return
 			}
 			res, err := json.Marshal(sentence)
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
 			fmt.Fprint(w, string(res))
 		case http.MethodPut:
 			if !idSentenceRegexp.MatchString(r.RequestURI) {
-				log.Fatal(err)
+				handleNotFound(w)
 				return
 			}
 			matches := idSentenceRegexp.FindStringSubmatch(r.RequestURI)
@@ -60,45 +58,41 @@ func main() {
 			var req UpdateSentenceRequest
 			err := json.NewDecoder(r.Body).Decode(&req)
 			if err != nil {
-				log.Fatal(err)
+				handleInvalidRequest(w)
 				return
 			}
 			id, err := strconv.Atoi(matches[1])
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
-			_, err = updateSentence(db, int64(id), req.Value)
+			err = updateSentence(db, id, req.Value)
 			if err != nil {
 				log.Fatal(err)
 				return
 			}
 			res, err := json.Marshal(&UpdateSentenceResponse{Id: id})
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
 			fmt.Fprint(w, string(res))
 		case http.MethodDelete:
 			if !idSentenceRegexp.MatchString(r.RequestURI) {
-				log.Fatal(err)
+				handleNotFound(w)
 				return
 			}
 			matches := idSentenceRegexp.FindStringSubmatch(r.RequestURI)
 			id, err := strconv.Atoi(matches[1])
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
-			_, err = deleteSentence(db, int64(id))
+			err = deleteSentence(db, id)
 			if err != nil {
 				log.Fatal(err)
 				return
 			}
 			res, err := json.Marshal(&DeleteSentenceResponse{Id: id})
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
 			fmt.Fprint(w, string(res))
 		}
@@ -109,18 +103,17 @@ func main() {
 			var req CreateSentenceRequest
 			err := json.NewDecoder(r.Body).Decode(&req)
 			if err != nil {
-				log.Fatal(err)
+				handleInvalidRequest(w)
 				return
 			}
-			_, err = createSentence(db, req.Value)
+			id, err := createSentence(db, req.Value)
 			if err != nil {
 				log.Fatal(err)
 				return
 			}
-			res, err := json.Marshal(&CreateSentenceResponse{Id: 0})
+			res, err := json.Marshal(&CreateSentenceResponse{Id: id})
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
 			fmt.Fprint(w, string(res))
 		case http.MethodGet:
@@ -131,8 +124,7 @@ func main() {
 			}
 			res, err := json.Marshal(&SentencesResponse{Records: sentences})
 			if err != nil {
-				log.Fatal(err)
-				return
+				panic(err)
 			}
 			fmt.Fprint(w, string(res))
 		}
@@ -143,8 +135,21 @@ func main() {
 	}
 }
 
-func handleErrorResponse() {
+func handleInvalidRequest(w http.ResponseWriter) {
+	handleErrorResponse(w, http.StatusBadRequest, "Invalid Request")
+}
 
+func handleNotFound(w http.ResponseWriter) {
+	handleErrorResponse(w, http.StatusNotFound, "Not Found")
+}
+
+func handleErrorResponse(w http.ResponseWriter, statusCode int, errorString string) {
+	w.WriteHeader(statusCode)
+	buf, err := json.Marshal(ErrorResponse{Error: errorString})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Fprint(w, string(buf))
 }
 
 func WithBasicAuth(f func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
