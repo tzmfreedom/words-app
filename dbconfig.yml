@@ -6,6 +6,6 @@ development:
 
 production:
     dialect: postgres
-    datasource: dbname=myapp sslmode=disable
+    datasource: ${DATABASE_URL}
     dir: migrations/
     table: migrations
