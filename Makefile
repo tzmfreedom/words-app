@@ -53,3 +53,7 @@ db/migrate/new:
 .PHONY: db/console
 db/console:
 	psql -U postgres -h localhost -p 5432 myapp
+
+.PHONY: prod/db/console
+prod/db/console:
+	heroku pg:psql
