@@ -1,9 +1,11 @@
 PORT ?= 8080
 DATABASE_URL ?= "postgres://postgres:@localhost:5432/myapp?sslmode=disable"
+AUTH_USER ?= user
+AUTH_PASS ?= pass
 
 .PHONY: run
 run: format
-	DATABASE_URL=$(DATABASE_URL) PORT=$(PORT) go run .
+	USER=$(AUTH_USER) PASS=$(AUTH_PASS) DATABASE_URL=$(DATABASE_URL) PORT=$(PORT) go run .
 
 .PHONY: format
 format:
@@ -47,3 +49,7 @@ db/init:
 .PHONY: db/migrate/new
 db/migrate/new:
 	migrate create -ext sql -dir db/migrations -seq $(NAME)
+
+.PHONY: db/console
+db/console:
+	psql -U postgres -h localhost -p 5432 myapp
