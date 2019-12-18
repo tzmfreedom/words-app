@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>New Record</h1>
+    <h1>Edit Record</h1>
     <form>
       <table>
         <tbody>
@@ -32,15 +32,14 @@
   const auth = { auth: { username: 'user', password: 'pass' }};
   export default {
     async asyncData({ params, $axios }) {
-      const res = await $axios.get(`http://localhost:8080/sentences/${params.id}`, auth)
+      const res = await $axios.get(`http://localhost:8080/sentences/${params.sentenceId}`, auth)
       return {
-        value: '',
         sentence: res.data,
       }
     },
     methods: {
       async update() {
-        const res = await this.$axios.put(`http://localhost:8080/sentences/${this.sentence.id}`, { value: this.value }, auth)
+        const res = await this.$axios.put(`http://localhost:8080/sentences/${this.sentence.id}`, { value: this.sentence.value }, auth)
         this.$router.push({ name: 'sentences-id', params: { id: res.data.id }})
       }
     }
