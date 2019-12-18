@@ -29,18 +29,18 @@
 </template>
 
 <script>
-  import api from '~/lib/api.js'
+  import sentence from '~/lib/sentence.js'
 
   export default {
     async asyncData({ params }) {
-      const res = await api.find(params.sentenceId)
+      const res = await sentence.find(params.sentenceId)
       return {
         sentence: res.data,
       }
     },
     methods: {
       async update() {
-        const res = await api.update(this.sentence.id, this.sentence.value)
+        const res = await sentence.update(this.sentence.id, this.sentence.value)
         this.$router.push({ name: 'sentences-id', params: { id: res.data.id }})
       }
     }

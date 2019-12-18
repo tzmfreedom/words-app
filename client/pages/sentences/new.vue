@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import api from '~/lib/api.js'
+  import sentence from '~/lib/sentence.js'
 
   export default {
     data() {
@@ -27,7 +27,7 @@
     },
     methods: {
       async create() {
-        const res = await api.create(this.value)
+        const res = await sentence.create(this.value)
         this.$router.push({ name: 'sentences-id', params: { id: res.data.id }})
       }
     }

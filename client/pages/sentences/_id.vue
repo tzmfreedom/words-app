@@ -26,14 +26,14 @@
 </template>
 
 <script>
-  import api from '~/lib/api.js'
+  import sentence from '~/lib/sentence.js'
 
   export default {
     validate({ params }) {
       return /^\d+$/.test(params.id)
     },
     async asyncData({ params }) {
-      const res = await api.find(params.id)
+      const res = await sentence.find(params.id)
       return {
         sentence: res.data,
       }

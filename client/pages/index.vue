@@ -30,11 +30,11 @@
 </template>
 
 <script>
-  import api from '~/lib/api.js'
+  import sentence from '~/lib/sentence.js'
 
   export default {
     asyncData() {
-      return api.findAll()
+      return sentence.findAll()
         .then(res => {
           return {
             sentences: res.data.records,
@@ -43,7 +43,7 @@
     },
     methods: {
       async destroy(sentence) {
-        await api.delete(sentence.id);
+        await sentence.delete(sentence.id);
         this.sentences.splice(this.sentences.indexOf(sentence), 1);
         this.$router.push('/')
       }
