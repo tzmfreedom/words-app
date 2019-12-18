@@ -54,7 +54,7 @@ export default {
     }
   },
   env: {
-    baseUrl: process.env.BASE_URL || 'http://user:pass@localhost:8080',
+    baseUrl: process.env.BASE_URL,
     authUser: process.env.AUTH_USER,
     authPass: process.env.AUTH_PASS,
   }
