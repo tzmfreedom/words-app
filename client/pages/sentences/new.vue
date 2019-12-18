@@ -17,6 +17,8 @@
 </template>
 
 <script>
+  import api from '~/lib/api.js'
+
   export default {
     data() {
       return {
@@ -25,7 +27,7 @@
     },
     methods: {
       async create() {
-        const res = await this.$axios.post(`http://localhost:8080/sentences`, { value: this.value }, { auth: { username: 'user', password: 'pass' }})
+        const res = await api.create(this.value)
         this.$router.push({ name: 'sentences-id', params: { id: res.data.id }})
       }
     }

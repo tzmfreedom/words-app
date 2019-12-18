@@ -38,7 +38,6 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    '@nuxtjs/axios',
     ['@nuxtjs/moment', {
       locales: ['ja'],
       defaultLocale: 'ja',
@@ -53,5 +52,10 @@ export default {
     */
     extend (config, ctx) {
     }
+  },
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://user:pass@localhost:8080',
+    authUser: process.env.AUTH_USER,
+    authPass: process.env.AUTH_PASS,
   }
 }

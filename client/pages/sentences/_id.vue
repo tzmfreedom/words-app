@@ -26,17 +26,17 @@
 </template>
 
 <script>
+  import api from '~/lib/api.js'
+
   export default {
     validate({ params }) {
       return /^\d+$/.test(params.id)
     },
-    asyncData({ params, $axios }) {
-      return $axios.get(`http://@localhost:8080/sentences/${params.id}`, { auth: { username: 'user', password: 'pass' } })
-        .then(res => {
-          return {
-            sentence: res.data,
-          }
-        })
+    async asyncData({ params }) {
+      const res = await api.find(params.id)
+      return {
+        sentence: res.data,
+      }
     }
   }
 </script>

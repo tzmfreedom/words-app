@@ -29,17 +29,18 @@
 </template>
 
 <script>
-  const auth = { auth: { username: 'user', password: 'pass' }};
+  import api from '~/lib/api.js'
+
   export default {
-    async asyncData({ params, $axios }) {
-      const res = await $axios.get(`http://localhost:8080/sentences/${params.sentenceId}`, auth)
+    async asyncData({ params }) {
+      const res = await api.find(params.sentenceId)
       return {
         sentence: res.data,
       }
     },
     methods: {
       async update() {
-        const res = await this.$axios.put(`http://localhost:8080/sentences/${this.sentence.id}`, { value: this.sentence.value }, auth)
+        const res = await api.update(this.sentence.id, this.sentence.value)
         this.$router.push({ name: 'sentences-id', params: { id: res.data.id }})
       }
     }

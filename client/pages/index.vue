@@ -30,10 +30,11 @@
 </template>
 
 <script>
-  const auth = { auth: { username: 'user', password: 'pass' } };
+  import api from '~/lib/api.js'
+
   export default {
-    asyncData({$axios}) {
-      return $axios.get(`http://@localhost:8080/sentences`, auth)
+    asyncData() {
+      return api.findAll()
         .then(res => {
           return {
             sentences: res.data.records,
@@ -42,7 +43,7 @@
     },
     methods: {
       async destroy(sentence) {
-        await this.$axios.delete(`http://@localhost:8080/sentences/${sentence.id}`, auth);
+        await api.delete(sentence.id);
         this.sentences.splice(this.sentences.indexOf(sentence), 1);
         this.$router.push('/')
       }
