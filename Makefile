@@ -15,10 +15,6 @@ format:
 import:
 	goimports -w .
 
-.PHONY: dep
-dep:
-	dep ensure
-
 .PHONY: deploy
 deploy:
 	git push heroku master
