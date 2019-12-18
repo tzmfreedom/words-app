@@ -38,6 +38,11 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios',
+    ['@nuxtjs/moment', {
+      locales: ['ja'],
+      defaultLocale: 'ja',
+    }],
   ],
   /*
   ** Build configuration

@@ -130,7 +130,7 @@ func main() {
 			fmt.Fprint(w, string(res))
 		}
 	}))
-	handler := cors.Default().Handler(http.DefaultServeMux)
+	handler := cors.AllowAll().Handler(http.DefaultServeMux)
 	err = http.ListenAndServe(":"+port, handler)
 	if err != nil {
 		panic(err)
