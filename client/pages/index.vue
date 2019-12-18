@@ -43,7 +43,7 @@
     },
     methods: {
       async destroy(sentence) {
-        await sentence.delete(sentence.id);
+        await sentence.destroy(sentence.id);
         this.sentences.splice(this.sentences.indexOf(sentence), 1);
         this.$router.push('/')
       }
