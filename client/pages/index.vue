@@ -15,8 +15,8 @@
     <tr v-for="sentence in sentences">
       <td>
         <nuxt-link v-bind:to="{name: 'sentences-id', params: { id: sentence.id }}">Detail</nuxt-link> |
-        <nuxt-link v-bind:to="{name: 'sentences-sentenceId-edit', params: { sentenceId: sentence.id }}">Edit</nuxt-link> |
-        <a href="#" v-on:click.prevent="destroy(sentence)">Delete</a>
+        <nuxt-link v-bind:to="{name: 'sentences-sentenceId-edit', params: { sentenceId: sentence.id }}">Edit</nuxt-link>
+<!--        <a href="#" v-on:click.prevent="destroy(sentence)">Delete</a>-->
       </td>
       <td>{{ sentence.id }}</td>
       <td>{{ sentence.value }}</td>
