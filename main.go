@@ -27,7 +27,7 @@ func main() {
 		http.FileServer(http.Dir("./client/dist")).ServeHTTP(w, r)
 	}))
 	idSentenceRegexp := regexp.MustCompile(`^/sentences/(\d+)$`)
-	http.HandleFunc("/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			if !idSentenceRegexp.MatchString(r.RequestURI) {
@@ -98,7 +98,7 @@ func main() {
 			fmt.Fprint(w, string(res))
 		}
 	}))
-	http.HandleFunc("/sentences", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/sentences", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
 			var req CreateSentenceRequest

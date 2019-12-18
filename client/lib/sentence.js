@@ -26,18 +26,18 @@ export default {
     return axios.delete(url, getConfig())
   },
   async findAll() {
-    return this.get(`${baseUrl}/sentences`)
+    return this.get(`${baseUrl}/api/sentences`)
   },
   async find(id) {
-    return this.get(`${baseUrl}/sentences/${id}`)
+    return this.get(`${baseUrl}/api/sentences/${id}`)
   },
   async create(value) {
-    return this.post(`${baseUrl}/sentences`, {value: value})
+    return this.post(`${baseUrl}/api/sentences`, {value: value})
   },
   async update(id, value) {
-    return this.put(`${baseUrl}/sentences/${id}`, {value: value})
+    return this.put(`${baseUrl}/api/sentences/${id}`, {value: value})
   },
   async destroy(id) {
-    return this.delete(`${baseUrl}/sentences/${id}`)
+    return this.delete(`${baseUrl}/api/sentences/${id}`)
   }
 }
