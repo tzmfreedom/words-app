@@ -26,7 +26,7 @@ func main() {
 	http.HandleFunc("/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		http.FileServer(http.Dir("./client/dist")).ServeHTTP(w, r)
 	}))
-	idSentenceRegexp := regexp.MustCompile(`^/sentences/(\d+)$`)
+	idSentenceRegexp := regexp.MustCompile(`^/api/sentences/(\d+)$`)
 	http.HandleFunc("/api/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
