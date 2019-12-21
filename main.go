@@ -14,20 +14,13 @@ import (
 	"strconv"
 )
 
-func main() {
-	databaseUrl := os.Getenv("DATABASE_URL")
-	port := os.Getenv("PORT")
-
-	db, err := sql.Open("postgres", databaseUrl)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	http.HandleFunc("/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
+func router(db *sql.DB) http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		http.FileServer(http.Dir("./client/dist")).ServeHTTP(w, r)
 	}))
 	idSentenceRegexp := regexp.MustCompile(`^/api/sentences/(\d+)$`)
-	http.HandleFunc("/api/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/sentences/", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			if !idSentenceRegexp.MatchString(r.RequestURI) {
@@ -98,7 +91,7 @@ func main() {
 			fmt.Fprint(w, string(res))
 		}
 	}))
-	http.HandleFunc("/api/sentences", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/sentences", WithBasicAuth(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
 			var req CreateSentenceRequest
@@ -130,7 +123,19 @@ func main() {
 			fmt.Fprint(w, string(res))
 		}
 	}))
-	handler := cors.AllowAll().Handler(http.DefaultServeMux)
+	return cors.AllowAll().Handler(mux)
+}
+
+func main() {
+	databaseUrl := os.Getenv("DATABASE_URL")
+	port := os.Getenv("PORT")
+
+	db, err := sql.Open("postgres", databaseUrl)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	handler := router(db)
 	err = http.ListenAndServe(":"+port, handler)
 	if err != nil {
 		panic(err)

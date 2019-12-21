@@ -1,5 +1,6 @@
 PORT ?= 8080
 DATABASE_URL ?= "postgres://postgres:@localhost:5432/myapp?sslmode=disable"
+TEST_DATABASE_URL ?= "postgres://postgres:@localhost:5432/test?sslmode=disable"
 AUTH_USER ?= user
 AUTH_PASS ?= pass
 
@@ -22,6 +23,10 @@ deploy:
 .PHONY: db/migrate
 db/migrate:
 	migrate -database $(DATABASE_URL) -path db/migrations up
+
+.PHONY: db/migrate
+db/migrate/test:
+	migrate -database $(TEST_DATABASE_URL) -path db/migrations up
 
 .PHONY: migrate
 migrate:
@@ -53,3 +58,7 @@ db/console:
 .PHONY: prod/db/console
 prod/db/console:
 	heroku pg:psql
+
+.PHONY: test
+test:
+	USER=$(AUTH_USER) PASS=$(AUTH_PASS) DATABASE_URL=$(TEST_DATABASE_URL) go test .
